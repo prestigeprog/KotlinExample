@@ -163,6 +163,4 @@ class User private constructor(
         accessCode = generateAccessCode()
         passwordHash = encrypt(accessCode!!)
     }
-
-
 }

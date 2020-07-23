@@ -1,5 +1,7 @@
 package ru.skillbranch.kotlinexample
 
+import androidx.annotation.VisibleForTesting
+
 object UserHolder {
     private val map = mutableMapOf<String, User>()
 
@@ -18,7 +20,7 @@ object UserHolder {
     }
 
     fun loginUser(login: String, password: String): String? {
-        return map[login.trim()]?.run {
+        return map[login.trim().normalized()]?.run {
             if (checkPassword(password)) this.userInfo
             else null
         }
@@ -45,15 +47,17 @@ object UserHolder {
             user?.setAccessCode()
         }
     }
-
-
-    private fun String.normalized(): String {
-        var result = this.trim().toLowerCase()
-        if (this.startsWith("+")) {
-            result = this.replace("""[^+\d]""".toRegex(), "")
-        }
-        return result
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun clearHolder() {
+        map.clear()
     }
 }
 
+private fun String.normalized(): String {
+    var result = this.trim().toLowerCase()
+    if (this.startsWith("+")) {
+        result = this.replace("""[^+\d]""".toRegex(), "")
+    }
+    return result
+}
 
